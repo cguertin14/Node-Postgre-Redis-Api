@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import validator from 'validator';
 import countries from '../config/json/countries.json';
+import Sequelize from 'sequelize';
 
 /**
  * Base config for a mongoose Schema attribute.
@@ -10,7 +11,7 @@ import countries from '../config/json/countries.json';
  */
 export const baseConfig = (type, attributes = {}) => {
     let toReturn = {};
-    if (type === String)
+    if (type === Sequelize.STRING)
         toReturn = _.assign({}, { trim: true, minlength: 1 });
     return _.assign({}, toReturn, {
         type,

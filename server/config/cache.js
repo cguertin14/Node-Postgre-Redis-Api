@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const redis = require('redis');
+import redis from 'redis';
+import Sequelize from 'sequelize';
 const { promisify } = require('util');
 
 const client = redis.createClient(process.env.REDISCLOUD_URL || 'redis://redis:6379');

@@ -3,7 +3,7 @@ node_js:
   - "10"
 dist: trusty
 services:
-  - mongodb
+  - postgresql
   - redis-server
 env:
   - NODE_ENV=ci PORT=3000 JWT_SECRET=ashujdashdsadhjksahjkdhjal

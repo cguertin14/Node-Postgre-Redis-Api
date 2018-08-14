@@ -7,31 +7,35 @@ services:
     volumes:
       - .:/usr/src/app
     links:
-      - mongo
+      - postgres
       - redis
     depends_on:
-      - mongo
+      - postgres
       - redis
     networks:
       - backend
     expose: 
       - 3000
   
-  mongo:
-    image: mongo
+  postgres:
+    image: postgres
+    environment:         
+      POSTGRES_DB: template_api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes: 
-      - mongo:/data/db/
+      - postgres:/data/postgres/
     networks:
       - backend
     ports:
-      - "27017:27017"
+      - "5432:5432"
     expose:
-      - 27017
+      - 5432
   
   redis:
     image: redis
     volumes:
-      - redis:/data/
+      - redis:/data/redis/
     networks: 
       - backend
     ports:
@@ -48,11 +52,25 @@ services:
       - api
     networks: 
       - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: charlesguertin@live.ca
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    depends_on:
+      - postgres
+    ports:
+      - '80:80'
+    expose:
+      - 80
+    networks:
+      - backend
     
 
 networks:
   backend:
 
 volumes:
-  mongo:
+  postgres:
   redis:

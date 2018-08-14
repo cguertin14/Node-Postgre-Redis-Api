@@ -1,9 +1,9 @@
 // Imports.
 import './config/config';
 import './config/passport';
-import './db/mongoose';
+import './db/sequelize';
 import './config/i18n';
-import './config/cache';
+//import './config/cache';
 import express from 'express';
 import passport from 'passport/lib';
 

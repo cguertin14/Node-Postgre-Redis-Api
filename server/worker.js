@@ -1,4 +1,4 @@
-import './db/mongoose';
+import './db/sequelize';
 import kue from 'kue';
 import _ from 'lodash';
 import { DeviceToken } from './api/models/DeviceToken';

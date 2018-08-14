@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { baseConfig, refValidator } from '../../utils/mongoose';
+import { baseConfig, refValidator } from '../../utils/sequelize';
 import { User } from './User';
 const { Types } = mongoose.Schema;
 

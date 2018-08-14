@@ -1,9 +1,9 @@
 # Summary
 
-REST API Template in Node JS
+REST API Template in Node JS (With PostgreSQL)
 
 ## Status
-[![Build Status](https://travis-ci.com/cguertin14/Node-REST-API-Template.svg?token=wMAojsLhP9yFixAFFg69&branch=master)](https://travis-ci.com/cguertin14/Node-REST-API-Template)
+[![Build Status](https://travis-ci.com/cguertin14/Node-Postgre-Redis-Api.svg?token=wMAojsLhP9yFixAFFg69&branch=master)](https://travis-ci.com/cguertin14/Node-Postgre-Redis-Api)
 
 ## Author 
 
@@ -42,6 +42,6 @@ Middlewares can be added at anytime in the '/server/api/middlewares' folder.
 * Node.js
 * Express.js
 * Passport.js
-* Mongoose.js
+* Sequelize.js
 * Mocha.js
 * JWT

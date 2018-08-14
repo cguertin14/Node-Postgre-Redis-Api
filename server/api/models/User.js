@@ -1,34 +1,33 @@
 import _ from 'lodash';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
-import mongoose from 'mongoose';
-import findOrCreate from 'mongoose-findorcreate';
-import uniqueValidator from 'mongoose-unique-validator';
-import { baseConfig, dateConfig, refValidator, baseConfigUrl, countryConfig } from '../../utils/mongoose';
+import { baseConfig, dateConfig, refValidator, baseConfigUrl, countryConfig } from '../../utils/sequelize';
+import { sequelize } from '../../db/sequelize';
+import Sequelize from 'sequelize';
 import StripeHelper from '../../config/payments/StripeHelper';
 import { s3 } from '../../config/json/services.json';
 
-const UserSchema = new mongoose.Schema({
-	email: baseConfig(String, {
+export const User = sequelize.define('user', {
+	email: baseConfig(Sequelize.STRING, {
 		minlength: 1,
 		unique: true
 	}),
-	password: baseConfig(String, {
+	password: baseConfig(Sequelize.STRING, {
 		minlength: 6,
-		required: false
+		allowNull: false
 	}),
-	firstName: baseConfig(String, {
+	firstName: baseConfig(Sequelize.STRING, {
 		trim: true,
 		minlength: 1,
 	}),
-	lastName: baseConfig(String, {
+	lastName: baseConfig(Sequelize.STRING, {
 		trim: true,
 		minlength: 1,
 	}),
 	isAdmin: baseConfig(Boolean, { default: false }),
-	locale: baseConfig(String, { default: 'en' }),
-	birthdate: dateConfig({ required: false }),
-	gender: baseConfig(String, {
+	locale: baseConfig(Sequelize.STRING, { default: 'en' }),
+	birthdate: dateConfig({ allowNull: false }),
+	gender: baseConfig(Sequelize.STRING, {
 		validate: {
 			validator(val) {
 				return /\b(male|female|other)\b/.test(val);
@@ -37,8 +36,8 @@ const UserSchema = new mongoose.Schema({
 		}
 	}),
 	phoneNumber: {
-		type: String,
-		required: false,
+		type: Sequelize.STRING,
+		allowNull: false,
 		set: (val) => {
 			if (val === null || val === '')
 				return undefined;
@@ -46,47 +45,28 @@ const UserSchema = new mongoose.Schema({
 		}
 	},
 	country: countryConfig(),
-	defaultCard: baseConfig(String, { required: false }),
-	profileImageUrl: baseConfigUrl({ required: false, default: `${s3.url}/profile_default.png` }),
+	defaultCard: baseConfig(Sequelize.STRING, { allowNull: false }),
+	profileImageUrl: baseConfigUrl({ allowNull: false, default: `${s3.url}/profile_default.png` }),
 	facebookId: {
-		type: String,
-		required: false,
+		type: Sequelize.STRING,
+		allowNull: false,
 		default: null
 	},
 	stripe_customer_id: {
-		type: String,
-		required: false,
+		type: Sequelize.STRING,
+		allowNull: false,
 		default: null
-	},
-	friends: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
-			required: true,
-		}
-	],
-	friendInvites: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
-			required: true
-		}
-	]
+	}
 }, { timestamps: true });
 
-// Plugins
-UserSchema.plugin(findOrCreate);
-UserSchema.plugin(uniqueValidator);
-UserSchema.plugin(require('mongoose-random'), { path: 'r' });
-
 // Methods
-UserSchema.methods.createCustomer = async function () {
+User.createCustomer = async function () {
 	const stripeResult = await new StripeHelper().createCustomer(this.toObject().email);
 	this.stripe_customer_id = stripeResult.id;
 	return this.save();
 };
 
-UserSchema.methods.toJSON = function () {
+User.toJSON = function () {
 	let user = this.toObject();
 	let toReturn = _.pick(user, [
 		'_id',
@@ -106,11 +86,11 @@ UserSchema.methods.toJSON = function () {
 	return toReturn;
 };
 
-UserSchema.methods.toShort = function () {
+User.toShort = function () {
 	return _.pick(this.toObject(), ['_id', 'firstName', 'lastName', 'profileImageUrl']);
 };
 
-UserSchema.methods.removeFriend = function (id) {
+User.removeFriend = function (id) {
 	let user = this;
 	return user.update({
 		$pull: {
@@ -119,7 +99,7 @@ UserSchema.methods.removeFriend = function (id) {
 	});
 };
 
-UserSchema.methods.removeInvite = function (id) {
+User.removeInvite = function (id) {
 	let user = this;
 	return user.update({
 		$pull: {
@@ -128,12 +108,12 @@ UserSchema.methods.removeInvite = function (id) {
 	});
 };
 
-UserSchema.methods.getFullname = function () {
+User.getFullname = function () {
 	const user = this.toObject();
 	return `${user.firstName} ${user.lastName}`;
 };
 
-UserSchema.statics.existsWithEmail = async function (email) {
+User.statics.existsWithEmail = async function (email) {
 	try {
 		return await User.findOne({ email });
 	} catch (e) {
@@ -141,7 +121,7 @@ UserSchema.statics.existsWithEmail = async function (email) {
 	}
 };
 
-UserSchema.statics.findByCredentials = async function (email, password) {
+User.statics.findByCredentials = async function (email, password) {
 	let foundUser = await User.findOne({ email });
 	if (!foundUser) return;
 	if (!await bcrypt.compare(password, foundUser.password)) return;
@@ -149,7 +129,7 @@ UserSchema.statics.findByCredentials = async function (email, password) {
 };
 
 // Events
-UserSchema.pre('save', async function () {
+User.pre('save', async function () {
 	let user = this;
 
 	if (!user.isModified('password')) return Promise.resolve();
@@ -162,16 +142,14 @@ UserSchema.pre('save', async function () {
 	});
 });
 
-export const User = mongoose.model('User', UserSchema);
-
-UserSchema.path('friends').validate(function (value) {
+User.path('friends').validate(function (value) {
 	User.findById(value).then(user => {
 		if (user) return true;
 		return false;
 	});
 }, 'User does not exist.');
 
-UserSchema.path('friendInvites').validate(function (value) {
+User.path('friendInvites').validate(function (value) {
 	User.findById(value).then(user => {
 		if (user) return true;
 		return false;

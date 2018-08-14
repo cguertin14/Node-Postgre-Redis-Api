@@ -1,6 +1,6 @@
 // Config.
 import '../config/config';
-import './mongoose';
+import './sequelize';
 
 // Seeders.
 import UsersCollectionSeeder from './seeds/users';
