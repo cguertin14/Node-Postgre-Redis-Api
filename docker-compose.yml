@@ -1,0 +1,58 @@
+version: '3.6'
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    links:
+      - mongo
+      - redis
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - backend
+    expose: 
+      - 3000
+  
+  mongo:
+    image: mongo
+    volumes: 
+      - mongo:/data/db/
+    networks:
+      - backend
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
+  
+  redis:
+    image: redis
+    volumes:
+      - redis:/data/
+    networks: 
+      - backend
+    ports:
+      - "6379:6379"
+    expose:
+      - 6379
+
+  nginx:
+    image: nginx
+    build: ./nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks: 
+      - backend
+    
+
+networks:
+  backend:
+
+volumes:
+  mongo:
+  redis:

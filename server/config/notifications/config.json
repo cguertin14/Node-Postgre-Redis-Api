@@ -1,0 +1,12 @@
+{
+  "gcm": {
+    "id": "<GCM_ID_HERE>"
+  },
+  "apn": {
+    "token": {
+      "teamId": "<TEAM_ID_HERE>",
+      "keyId": "<KEY_ID_HERE>"
+    },
+    "passphrase": "<PASS_HERE>"
+  }
+}

@@ -1,0 +1,15 @@
+apps:
+  - script: index.js
+    instances: max
+    exec_mode: cluster
+    exec_interpreter: babel-node
+    autorestart: true
+    env:
+      NODE_ENV: production
+      JWT_SECRET: SECRET_HERE
+      JWT_EXPIRES_IN: EXPIRATION_HERE
+  - script: index-worker.js
+    exec_interpreter: babel-node
+    autorestart: true
+    env:
+      NODE_ENV: production

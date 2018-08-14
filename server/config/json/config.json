@@ -1,0 +1,14 @@
+{
+   "test": {
+       "PORT": 3000,
+       "MONGODB_URI": "mongodb://localhost:27017/<NAME_HERE>Test",
+       "JWT_SECRET": "<SECRET_HERE>",
+       "JWT_EXPIRES_IN": 9999999
+   },
+   "development": {
+       "PORT": 3000,
+       "MONGODB_URI": "mongodb://mongo:27017/<NAME_HERE>",
+       "JWT_SECRET": "<SECRET_HERE>",
+       "JWT_EXPIRES_IN": 9999999
+   }
+}

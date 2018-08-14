@@ -1,0 +1,15 @@
+{
+    "FACEBOOK": {
+        "appId": "<APP_ID_HERE>",
+        "appSecret": "<APP_SECRET_HERE>",
+        "callbackURL": "http://localhost:3000/facebook/login/callback",
+        "profileFields": [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "gender",
+            "picture.width(400).height(400)"
+        ]
+    }
+}
