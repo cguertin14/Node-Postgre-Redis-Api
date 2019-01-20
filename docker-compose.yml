@@ -23,6 +23,7 @@ services:
       POSTGRES_DB: template_api
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres/
     volumes: 
       - postgres:/data/postgres/
     networks:
@@ -45,7 +46,7 @@ services:
 
   nginx:
     image: nginx
-    build: ./nginx
+    build: ./deployment/nginx
     ports:
       - "8080:80"
     depends_on:
@@ -58,19 +59,19 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: charlesguertin@live.ca
       PGADMIN_DEFAULT_PASSWORD: postgres
-    depends_on:
-      - postgres
+    volumes:
+      - pgadmin:/data/pgadmin/
     ports:
-      - '80:80'
-    expose:
-      - 80
+      - '5050:5050'
     networks:
       - backend
     
 
 networks:
   backend:
+    driver: bridge
 
 volumes:
   postgres:
   redis:
+  pgadmin:

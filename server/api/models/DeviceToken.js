@@ -1,19 +1,11 @@
-import mongoose from 'mongoose';
-import { baseConfig, refValidator } from '../../utils/sequelize';
-import { User } from './User';
-const { Types } = mongoose.Schema;
+import { sequelize } from '../../db/sequelize';
+import Sequelize from 'sequelize';
+import { baseConfig } from '../../utils/sequelize';
 
-const DeviceTokenSchema = new mongoose.Schema({
-    platform: baseConfig(String, { 
-        validate: {
-            validator(val) {
-                return /\b(ios|android)\b/.test(val);
-            },
-            message: 'Platform can either be android or ios.'
-        } 
-    }),
-    token: baseConfig(String),
-    user: baseConfig(Types.ObjectId, { ref: 'User', validate: refValidator(User, 'user') })
+export const DeviceToken = sequelize.define('device_token', {
+	token: baseConfig(Sequelize.STRING),
+	user_id: baseConfig(Sequelize.INTEGER),
+	platform: baseConfig(Sequelize.ENUM, {
+		values: ['ios', 'android']
+	}),
 }, { timestamps: true });
-
-export const DeviceToken = mongoose.model('DeviceToken', DeviceTokenSchema);

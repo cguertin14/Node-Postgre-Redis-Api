@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 
-export const sequelize = new Sequelize('template_api', 'admin', 'postgres', {
+export const sequelize = new Sequelize('template_api', 'postgres', 'postgres', {
   host: 'postgres',
   dialect: 'postgres',
 
@@ -15,4 +15,6 @@ export const sequelize = new Sequelize('template_api', 'admin', 'postgres', {
   operatorsAliases: false
 });
 
-sequelize.authenticate().then(() => console.log('WORKEDDDDDD')).catch(err => console.error(err));
+sequelize.authenticate()
+  .then(() => console.log('Connected'))
+  .catch(err => console.error(err));
