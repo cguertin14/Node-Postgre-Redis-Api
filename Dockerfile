@@ -9,6 +9,6 @@ COPY package.json /usr/src/app/
 RUN npm i -g pm2 babel-cli
 RUN npm i
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["pm2-dev", "deployment/process-dev.yml"]

@@ -3,7 +3,7 @@ import './config/config';
 import './config/passport';
 import './db/sequelize';
 import './config/i18n';
-//import './config/cache';
+import './config/cache';
 import express from 'express';
 import passport from 'passport/lib';
 
@@ -29,12 +29,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes.
-app.use('/users', require('./api/routes/user').default);
-app.use('/facebook', require('./api/routes/facebook').default);
-app.use('/images', require('./api/routes/image').default);
-app.use('/friends', require('./api/routes/friend').default);
-app.use('/cards', require('./api/routes/card').default);
-app.use('/notifications', require('./api/routes/notification').default);
+require('./api/routes/router').default(app);
 
 // Global error handler.
 app.use(require('./api/exceptions/errorRegister').errorHandler);
